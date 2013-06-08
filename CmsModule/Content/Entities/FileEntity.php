@@ -34,7 +34,7 @@ class FileEntity extends BaseFileEntity
 	protected $parent;
 
 	/** @ORM\Column(type="boolean") */
-	protected $protected;
+	protected $protected = FALSE;
 
 	/**
 	 * @var \Nette\Http\FileUpload|\SplFileInfo
@@ -49,16 +49,9 @@ class FileEntity extends BaseFileEntity
 	protected $_oldPath;
 
 
-	public function __construct()
-	{
-		parent::__construct();
-
-		$this->protected = FALSE;
-	}
-
-
 	/**
-	 * @ORM\PreFlush()
+	 * @ORM\PrePersist()
+	 * @ORM\PreUpdate()
 	 */
 	public function preUpload()
 	{
@@ -70,7 +63,18 @@ class FileEntity extends BaseFileEntity
 			}
 
 			$this->generatePath();
+			return;
+		}
+	}
 
+
+	/**
+	 * @ORM\PostPersist()
+	 * @ORM\PostUpdate()
+	 */
+	public function upload()
+	{
+		if ($this->file) {
 			if ($this->_oldPath && $this->_oldPath !== $this->path) {
 				@unlink($this->getFilePathBy($this->_oldProtected, $this->_oldPath));
 			}
@@ -80,10 +84,8 @@ class FileEntity extends BaseFileEntity
 			} else {
 				copy($this->file->getPathname(), $this->getFilePath());
 			}
-			return;
-		}
-
-		if (
+			$this->file = NULL;
+		} else if (
 			($this->_oldPath || $this->_oldProtected) &&
 			($this->_oldPath != $this->path || $this->_oldProtected != $this->protected)
 		) {
