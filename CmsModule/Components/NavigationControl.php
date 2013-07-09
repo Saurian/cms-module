@@ -58,12 +58,12 @@ class NavigationControl extends Control
 	{
 		if ($entity instanceof \PagesModule\Entities\RedirectEntity) {
 			if ($entity->page) {
-				return $this->presenter->link('this', array('route' => $entity->page->mainRoute));
+				return $this->presenter->link('Route', array('route' => $entity->page->mainRoute));
 			} else {
 				return $this->template->basePath . '/' . $entity->redirectUrl;
 			}
 		} else {
-			return $this->presenter->link('this', array('route' => $entity->mainRoute));
+			return $this->presenter->link('Route', array('route' => $entity->mainRoute));
 		}
 	}
 

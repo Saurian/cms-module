@@ -12,7 +12,7 @@
 	{var $entity = $item->page->getPageWithLanguageAlias($presenter->lang)}
 	{var $url = $item->url}
 
-	{var $link = $presenter->link('this', array('route' => $item))}
+	{var $link = $presenter->link('Route', array('route' => $item))}
 
 	<li>{if! $active}<a href="{$link}">{/if}{$item->title}{if! $active}</a> <span class="divider">/</span>{/if}</li>
 
